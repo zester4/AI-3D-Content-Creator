@@ -1,5 +1,4 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, Modality } from "@google/genai";
 import type { Content } from '../types';
 
 if (!process.env.API_KEY) {
@@ -47,7 +46,6 @@ export const generate3DModelContent = async (prompt: string): Promise<Content> =
     const jsonText = response.text.trim();
     const parsedContent = JSON.parse(jsonText);
     
-    // Basic validation
     if (!parsedContent.title || !parsedContent.description || !Array.isArray(parsedContent.tags)) {
         throw new Error("Invalid content structure received from API.");
     }
@@ -82,4 +80,48 @@ export const generateConceptImage = async (prompt: string): Promise<string> => {
         console.error("Error generating concept image:", error);
         throw new Error("Failed to generate the concept image. The generation service might be unavailable.");
     }
+};
+
+export const editConceptImage = async (base64ImageDataUrl: string, prompt: string): Promise<string> => {
+  try {
+    const match = base64ImageDataUrl.match(/^data:(image\/.+);base64,(.+)$/);
+    if (!match) {
+      throw new Error("Invalid base64 image data URL format.");
+    }
+    const mimeType = match[1];
+    const base64ImageData = match[2];
+    
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image-preview',
+      contents: {
+        parts: [
+          {
+            inlineData: {
+              data: base64ImageData,
+              mimeType: mimeType,
+            },
+          },
+          {
+            text: prompt,
+          },
+        ],
+      },
+      config: {
+          responseModalities: [Modality.IMAGE, Modality.TEXT],
+      },
+    });
+    
+    for (const part of response.candidates[0].content.parts) {
+      if (part.inlineData) {
+        const base64ImageBytes: string = part.inlineData.data;
+        return `data:${part.inlineData.mimeType};base64,${base64ImageBytes}`;
+      }
+    }
+
+    throw new Error("No image was returned from the edit operation.");
+
+  } catch (error) {
+    console.error("Error editing concept image:", error);
+    throw new Error("Failed to edit the concept image. Please try a different prompt.");
+  }
 };

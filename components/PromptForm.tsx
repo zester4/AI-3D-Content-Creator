@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface PromptFormProps {
@@ -18,29 +17,27 @@ export const PromptForm: React.FC<PromptFormProps> = ({ prompt, setPrompt, onSub
   };
 
   return (
-    <div className="bg-slate-800/50 p-6 rounded-xl shadow-lg border border-slate-700">
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="prompt-input" className="block text-lg font-medium text-cyan-300 mb-2">
-          Describe your 3D model idea
-        </label>
-        <textarea
-          id="prompt-input"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="e.g., a glowing crystal sword, a sci-fi exploration helmet, a cute stylized creature..."
-          className="w-full h-28 p-3 bg-slate-900 border border-slate-600 rounded-lg text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow duration-200 resize-none"
-          disabled={isLoading}
-        />
-        <div className="mt-4 flex justify-end">
-          <button
-            type="submit"
-            disabled={isLoading || !prompt.trim()}
-            className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold rounded-lg shadow-md hover:from-cyan-600 hover:to-violet-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-400"
-          >
-            {isLoading ? 'Generating...' : 'Generate Content'}
-          </button>
-        </div>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="mt-6 border-t border-gray-200 pt-6">
+      <label htmlFor="prompt-input" className="block text-lg font-semibold text-teal-700 mb-2">
+        Then, describe your idea in detail
+      </label>
+      <textarea
+        id="prompt-input"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="e.g., a glowing crystal sword, a sci-fi exploration helmet, a cute stylized creature..."
+        className="w-full h-28 p-3 bg-white border border-gray-300 rounded-lg text-slate-700 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-shadow duration-200 resize-none"
+        disabled={isLoading}
+      />
+      <div className="mt-4 flex justify-end">
+        <button
+          type="submit"
+          disabled={isLoading || !prompt.trim()}
+          className="w-full sm:w-auto px-8 py-3 bg-teal-500 text-white font-bold rounded-lg shadow-md hover:bg-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-cream-100 focus:ring-teal-500"
+        >
+          {isLoading ? 'Generating...' : '✨ Generate Content & Art'}
+        </button>
+      </div>
+    </form>
   );
 };
